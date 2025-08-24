@@ -69,6 +69,7 @@ if os.environ.get('DATABASE_URL'):
             default=os.environ.get('DATABASE_URL'),
             conn_max_age=600,
             conn_health_checks=True,
+            ssl_require=True  # Add this for Railway PostgreSQL
         )
     }
 else:
@@ -78,7 +79,9 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
+# Add this after your database configuration
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
