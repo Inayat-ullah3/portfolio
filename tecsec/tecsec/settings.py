@@ -59,20 +59,33 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'tecsec.wsgi.application'
+# Database configuration
+import dj_database_url
 
+# Use DATABASE_URL if available, otherwise use your PostgreSQL credentials
 if os.environ.get('DATABASE_URL'):
-    import dj_database_url
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
             conn_max_age=600,
-            conn_health_checks=True
+            conn_health_checks=True,
         )
     }
-    DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 else:
-    raise Exception("DATABASE_URL not set. PostgreSQL is required in production.")
-
+    # Fallback to your PostgreSQL credentials
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'tecsec_db',
+            'USER': 'inayat',
+            'PASSWORD': 'Papa#1Ani2',
+            'HOST': 'your-postgres-host',  # Replace with your actual host
+            'PORT': '5432',
+            'OPTIONS': {
+                'sslmode': 'require',  # Important for Railway
+            },
+        }
+    }
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
